@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expense-tracker-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expense-tracker-backend
+  template:
+    metadata:
+      labels:
+        app: expense-tracker-backend
+    spec:
+      containers:
+        - name: expense-tracker-backend
+          image: expense-tracker-backend:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: EXPENSE_TRACKER_SERVER_PORT
+              value: "8080"
+            - name: EXPENSE_TRACKER_DB_HOST
+              value: "localhost"
+            - name: EXPENSE_TRACKER_DB_PORT
+              value: "5432"
+            - name: EXPENSE_TRACKER_DB_NAME
+              value: "notes"
+            - name: EXPENSE_TRACKER_DB_USERNAME
+              value: "postgres"
+            - name: EXPENSE_TRACKER_DB_PASSWORD
+              value: "Admin@123"
+            - name: EXPENSE_TRACKER_JWT_SECRET
+              value: "some_secret_key"
+            - name: EXPENSE_TRACKER_JWT_EXPIRY
+              value: "15"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: expense-tracker-backend
+spec:
+  selector:
+    app: expense-tracker-backend
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080
+  type: ClusterIP
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: expense-tracker-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: expense-tracker-frontend
+  template:
+    metadata:
+      labels:
+        app: expense-tracker-frontend
+    spec:
+      containers:
+        - name: expense-tracker-frontend
+          image: expense-tracker-frontend:latest
+          ports:
+            - containerPort: 80
+          env:
+            - name: API_BASE_URL
+              value: "http://notes-backend:8080"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: expense-tracker-frontend
+spec:
+  selector:
+    app: expense-tracker-frontend
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 80
+  type: LoadBalancer

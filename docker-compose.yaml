@@ -1,0 +1,37 @@
+services:
+  backend:
+    build:
+      context: ./expense-tracker-backend
+      dockerfile: Dockerfile
+    container_name: expense-tracker-backend
+    ports:
+      - "8080:8080"
+    environment:
+      EXPENSE_TRACKER_SERVER_PORT: 8080
+      EXPENSE_TRACKER_DB_HOST: host.docker.internal
+      EXPENSE_TRACKER_DB_PORT: 5432
+      EXPENSE_TRACKER_DB_NAME: expense-tracker
+      EXPENSE_TRACKER_DB_USERNAME: postgres
+      EXPENSE_TRACKER_DB_PASSWORD: Admin@123
+      EXPENSE_TRACKER_JWT_SECRET: ag4nrENBsmPg4DOW0XsO+SU2b94VwZh3oBypa3ugKqw=
+      EXPENSE_TRACKER_JWT_EXPIRY: 15
+    networks:
+      - expense-tracker-network
+
+  frontend:
+    build:
+      context: ./expense-tracker-frontend
+      dockerfile: Dockerfile
+    container_name: expense-tracker-frontend
+    ports:
+      - "3000:80"
+    environment:
+      API_BASE_URL: http://backend:8080
+    depends_on:
+      - backend
+    networks:
+      - expense-tracker-network
+
+networks:
+  expense-tracker-network:
+    driver: bridge
