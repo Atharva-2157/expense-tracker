@@ -54,3 +54,46 @@ The user interface is composed of two main sections post-login:
 
 1.  **Dashboard:** The landing page displaying the summary graphs of the last 30 days' expenses.
 2.  **Expenses Tab:** The management area where users can view expenses in a table, apply filters, use pagination, and perform expense CRUD operations.
+
+---
+
+## Running the Project
+
+Follow these steps to run the Expense Tracker application locally:
+
+1. **Build the Backend**
+   - Navigate to the backend folder:
+     ```bash
+     cd expense-tracker-backend
+     ```
+   - Build the executable JAR file:
+     ```bash
+     ./gradlew clean bootJar
+     ```
+
+2. **Configure Docker Compose**
+   - Go back to the parent folder where `docker-compose.yaml` is located:
+     ```bash
+     cd ..
+     ```
+   - Open the `docker-compose.yaml` file and update the following environment variables:
+     ```yaml
+     EXPENSE_TRACKER_DB_NAME: <your-db-name>
+     EXPENSE_TRACKER_DB_USERNAME: <your-db-username>
+     EXPENSE_TRACKER_DB_PASSWORD: <your-db-password>
+     ```
+   - **Important:** Make sure you create a PostgreSQL database with the same name as `EXPENSE_TRACKER_DB_NAME`.
+
+3. **Start the Application**
+   - Run Docker Compose:
+     ```bash
+     docker compose up
+     ```
+   - This will start both the backend and frontend services.
+
+4. **Access the Application**
+   - Once the services are running, open your browser and visit:
+     ```
+     http://localhost:3000
+     ```
+   - You should see the Expense Tracker frontend and be able to interact with your application.
